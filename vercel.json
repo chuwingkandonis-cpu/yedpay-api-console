@@ -8,9 +8,9 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/dist/boot.js" },
-    { "source": "/assets/(.*)", "destination": "/assets/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/dist/boot.js" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
