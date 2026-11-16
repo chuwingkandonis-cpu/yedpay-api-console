@@ -1,16 +1,16 @@
 import { z } from "zod";
-import { createRouter, publicQuery } from "../middleware";
-import { getDb } from "../queries/connection";
-import { orders, paymentTokens } from "@db/schema";
+import { createRouter, publicQuery } from "../middleware.js";
+import { getDb } from "../queries/connection.js";
+import { orders, paymentTokens } from "../../db/schema.js";
 import { desc, eq } from "drizzle-orm";
 import {
   computeTravelPremium,
   travelItemsSummary,
   TRAVEL_PLANS,
   TRAVEL_ADDONS,
-} from "../../contracts/travel";
-import { callYedpay, getCredentials } from "../services/yedpay";
-import { callTokenApi, tokenData } from "../services/yedpayToken";
+} from "../../contracts/travel.js";
+import { callYedpay, getCredentials } from "../services/yedpay.js";
+import { callTokenApi, tokenData } from "../services/yedpayToken.js";
 
 const MONTHLY_MONTHS = 12;
 const TOKEN_COMPANY_ID = "QLX17ML9"; // staging merchant company for tokenization
