@@ -20,7 +20,7 @@ mkdirSync(fnDir, { recursive: true });
 cpSync(join(root, "dist", "boot.js"), join(fnDir, "index.js"));
 writeFileSync(
   join(fnDir, ".vc-config.json"),
-  JSON.stringify({ runtime: "nodejs20.x", handler: "index.js" }, null, 2),
+  JSON.stringify({ runtime: "nodejs22.x", handler: "index.js" }, null, 2),
 );
 
 // 3. Routing: /api/* -> function, static files, SPA fallback
