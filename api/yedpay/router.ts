@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { createRouter, publicQuery } from "../middleware";
-import { getDb } from "../queries/connection";
-import { apiCallLogs, webhookNotifications } from "@db/schema";
+import { createRouter, publicQuery } from "../middleware.js";
+import { getDb } from "../queries/connection.js";
+import { apiCallLogs, webhookNotifications } from "../../db/schema.js";
 import { desc } from "drizzle-orm";
 import {
   callYedpay,
@@ -9,7 +9,7 @@ import {
   verifySignature,
   type YedpayCallResult,
   type YedpayEnvironment,
-} from "../services/yedpay";
+} from "../services/yedpay.js";
 
 const envEnum = z.enum(["production", "staging"]);
 

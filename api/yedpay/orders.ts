@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { createRouter, publicQuery } from "../middleware";
-import { getDb } from "../queries/connection";
-import { orders } from "@db/schema";
+import { createRouter, publicQuery } from "../middleware.js";
+import { getDb } from "../queries/connection.js";
+import { orders } from "../../db/schema.js";
 import { desc, eq } from "drizzle-orm";
-import { DEMO_PRODUCTS } from "../../contracts/products";
-import { callYedpay, getCredentials } from "../services/yedpay";
+import { DEMO_PRODUCTS } from "../../contracts/products.js";
+import { callYedpay, getCredentials } from "../services/yedpay.js";
 
 const cartItem = z.object({
   productId: z.string().min(1),
