@@ -98,6 +98,9 @@ app.onError((err, c) => {
 
 export default app;
 
+// Vercel serverless: export the Hono fetch handler so @vercel/node can invoke it.
+export const fetch = app.fetch;
+
 if (env.isProduction) {
   const { serve } = await import("@hono/node-server");
   const { serveStaticFiles } = await import("./lib/vite");
