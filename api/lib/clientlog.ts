@@ -1,22 +1,20 @@
-// Client-log sink: the browser half of the unified log.
+// appendLine is the sink the client-log endpoint writes through, so browser
+// logs land in exactly the same file with the same shape as server logs.
 //
-// The frontend has no filesystem access to the sandbox, so a browser-side
-// console.log is invisible to the building agent (it only reads the sandbox).
-// This endpoint closes that gap: the injected frontend logger POSTs here, and
-// we append the lines to the same /tmp/kimi-logs/app.log the backend writes —
-// one file, one format, one read for the agent.
-//
-// Guardrails (the preview URL is public — anyone holding it can reach this
-// route, so treat every field as untrusted):
-//   - cap each field (LOG_VALUE_MAX, applied before serialization so the line
-//     stays valid JSON) and each request body (LOG_BODY_MAX);
-//   - cap writes per window so a hostile caller cannot fill the disk: a
-//     per-identity cap plus a global ceiling, because the identity comes from a
+// It also echoes to stdout, for the same reason write() does: the platform log
+// pipeline collects stdout, so a file-only browser line vanished the moment the
+// sandbox was recycled. Server lines already had both sinks; browser lines
+// having only the file was an inconsistency, not a design choice.
+// The body cap lives here rather than in a Hono bodyLimit middleware: we read
+// the raw text ourselves, so we can reject over-size bodies before parsing
+// (the route is on the public preview URL).
+//   - rate limiting is keyed on the best available client identity (cf-connecting-ip,
+//     then x-forwarded-for); both are best-effort because the second is a
 //     client-supplied header and is therefore rotatable;
 //   - never echo anything back (a log endpoint is not a reflection surface).
 import type { Context } from "hono";
-import { appendLine } from "./logger";
-import { scrubCtx, scrubValue } from "./scrub";
+import { appendLine } from "./logger.js";
+import { scrubCtx, scrubValue } from "./scrub.js";
 
 const LOG_BODY_MAX = 64 * 1024;
 const LOG_MAX_LINES_PER_REQUEST = 50;

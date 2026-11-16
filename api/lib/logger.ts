@@ -1,18 +1,18 @@
-// Structured logger for the backend, mirrored to /tmp/kimi-logs/app.log.
+// appendLine is the sink the client-log endpoint writes through, so browser
+// logs land in exactly the same file with the same shape as server logs.
 //
-// Why a file at all: the sandbox-local log is what the building agent reads to
-// debug a preview that will not start or a request that 500s. stdout is
-// collected by the platform's log pipeline, but the agent inspects the sandbox
-// directly (its shell and this process share one sandbox), so the two sinks
-// are written from one call — same bytes in both.
-//
-// Zero dependencies on purpose: this file is grafted into every user project,
-// so pulling in pino/winston would add weight to the template's dependency
-// surface for a feature whose whole job is "append one JSON line".
+// It also echoes to stdout, for the same reason write() does: the platform log
+// pipeline collects stdout, so a file-only browser line vanished the moment the
+// sandbox was recycled. Server lines already had both sinks; browser lines
+// having only the file was an inconsistency, not a design choice.
+// The writer is deliberately dependency-free (fs.appendFileSync): the log file
+// is read by the building agent between steps, and pulling in a logging
+// framework would add weight to the template's dependency surface for a feature
+// whose whole job is "append one JSON line".
 import fs from "fs";
 import path from "path";
-import { currentRequestId } from "./requestcontext";
-import { scrubCtx, scrubValue } from "./scrub";
+import { currentRequestId } from "./requestcontext.js";
+import { scrubCtx, scrubValue } from "./scrub.js";
 
 // Fixed path (not PID-suffixed): the agent must be able to name it without
 // discovering a pid. /tmp is sandbox-local: it dies with the box, which is

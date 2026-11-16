@@ -1,4 +1,4 @@
-import { baseUrl, getCredentials, type YedpayCallResult } from "./yedpay";
+import { baseUrl, getCredentials, type YedpayCallResult } from "./yedpay.js";
 
 /**
  * Yedpay Tokenization API client.

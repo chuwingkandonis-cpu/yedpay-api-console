@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { log } from "../lib/logger";
+import { log } from "../lib/logger.js";
 
 export const yedpayGoRoutes = new Hono();
 
