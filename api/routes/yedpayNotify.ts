@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
-import { getDb } from "../queries/connection";
-import { webhookNotifications, orders, paymentTokens } from "@db/schema";
+import { getDb } from "../queries/connection.js";
+import { webhookNotifications, orders, paymentTokens } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
-import { verifySignature, getCredentials } from "../services/yedpay";
-import { log } from "../lib/logger";
+import { verifySignature, getCredentials } from "../services/yedpay.js";
+import { log } from "../lib/logger.js";
 
 export const yedpayNotifyRoutes = new Hono();
 
