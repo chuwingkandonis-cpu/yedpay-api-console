@@ -22,6 +22,13 @@ writeFileSync(
   join(fnDir, ".vc-config.json"),
   JSON.stringify({ runtime: "nodejs22.x", handler: "index.js" }, null, 2),
 );
+// The esbuild bundle is ESM. Without this marker Vercel's Node runtime treats
+// .js files as CommonJS and rewrites `import`/`export`, which breaks the
+// bundle. `"type": "module"` makes nodejs22.x load it natively as ESM.
+writeFileSync(
+  join(fnDir, "package.json"),
+  JSON.stringify({ type: "module" }, null, 2),
+);
 
 // 3. Routing: /api/* -> function, static files, SPA fallback
 writeFileSync(

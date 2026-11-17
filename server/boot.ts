@@ -101,7 +101,17 @@ export default app;
 // Vercel serverless: export the Hono fetch handler so @vercel/node can invoke it.
 export const fetch = app.fetch;
 
-if (env.isProduction) {
+// Only start a standalone Node server outside serverless platforms.
+// On Vercel (VERCEL=1, NODE_ENV=production) the runtime invokes the exported
+// handler directly — binding a port inside a function crashes the invocation
+// (FUNCTION_INVOCATION_FAILED), so this branch must never run there. Kept as
+// a plain function call (no top-level await) so the bundle parses under both
+// ESM and CJS loaders.
+if (env.isProduction && !process.env.VERCEL) {
+  void startServer();
+}
+
+async function startServer() {
   const { serve } = await import("@hono/node-server");
   const { serveStaticFiles } = await import("./lib/vite.js");
   serveStaticFiles(app);
