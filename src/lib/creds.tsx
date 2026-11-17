@@ -29,13 +29,19 @@ export function CredsProvider({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (config.data && !loaded) {
+    if (loaded) return;
+    if (config.data) {
       setEnvironment(config.data.environment);
       setApiKey(config.data.apiKey);
       setSignKey(config.data.signKey);
       setLoaded(true);
+    } else if (config.isError) {
+      // getConfig failing (missing env on the server, function down, …) must
+      // not lock the console forever: mark loaded with empty keys so the user
+      // can paste credentials in Settings and still fire requests.
+      setLoaded(true);
     }
-  }, [config.data, loaded]);
+  }, [config.data, config.isError, loaded]);
 
   return (
     <CredsContext.Provider

@@ -1,16 +1,24 @@
 import "dotenv/config";
 
-function required(name: string): string {
-  const value = process.env[name];
-  if (!value && process.env.NODE_ENV === "production") {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value ?? "";
+// Lazy env access: a serverless function must be able to BOOT even when env
+// vars are missing, or every route (including getConfig, which only reports
+// what is configured) dies with a 500 before it can answer. Reading happens
+// per-request, so setting a var and redeploying is picked up immediately.
+function read(name: string): string {
+  return process.env[name] ?? "";
 }
 
 export const env = {
-  appId: required("APP_ID"),
-  appSecret: required("APP_SECRET"),
-  isProduction: process.env.NODE_ENV === "production",
-  databaseUrl: required("DATABASE_URL"),
+  get appId() {
+    return read("APP_ID");
+  },
+  get appSecret() {
+    return read("APP_SECRET");
+  },
+  get isProduction() {
+    return process.env.NODE_ENV === "production";
+  },
+  get databaseUrl() {
+    return read("DATABASE_URL");
+  },
 };
